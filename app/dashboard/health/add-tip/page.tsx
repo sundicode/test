@@ -1,13 +1,14 @@
 "use client";
-import React from "react";
-import TextEditor from "@/components/TextEditor";
+import Button from "@/components/Button";
+import { useState } from "react";
 
-const page = () => {
+const CreateHealthTip = () => {
+  const [value, setValue] = useState("");
   return (
-    <div className="w-[50%] mx-auto">
-      <TextEditor />
-    </div>
+    <form>
+      <Button>Create Post</Button>
+    </form>
   );
 };
 
-export default page;
+export default CreateHealthTip;
