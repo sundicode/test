@@ -2,7 +2,7 @@
 import React from "react";
 import TextEditor from "@/components/TextEditor";
 
-const AddHealthTip = () => {
+const page = () => {
   return (
     <div className="w-[50%] mx-auto">
       <TextEditor />
@@ -10,4 +10,4 @@ const AddHealthTip = () => {
   );
 };
 
-export default AddHealthTip;
+export default page;
