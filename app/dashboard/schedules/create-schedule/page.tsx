@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import MedicksApi from "@/utils/axios";
 import cn from "@/utils/cn";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 type TSchedule = {
@@ -16,8 +16,14 @@ const CreateSchedule = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    reset,
+    formState: { errors, isSubmitSuccessful, isSubmitted },
   } = useForm<TSchedule>();
+
+  useEffect(() => {
+    reset();
+  }, [isSubmitSuccessful]);
+
   const router = useRouter();
   const handleCreateSchedule: SubmitHandler<TSchedule> = (data: TSchedule) => {
     MedicksApi.post("/schedule/create", data)
@@ -54,6 +60,11 @@ const CreateSchedule = () => {
                 placeholder="date"
                 {...register("date")}
               />
+              {errors?.date ? (
+                <p className="text-[10px] text-red-600 text-semibold">
+                  {errors?.date?.message}
+                </p>
+              ) : null}
             </div>
             <div className="flex flex-col gap-y-2">
               <label htmlFor="">Time</label>
@@ -65,6 +76,11 @@ const CreateSchedule = () => {
                 )}
                 {...register("time")}
               />
+              {errors?.time ? (
+                <p className="text-[10px] text-red-600 text-semibold">
+                  {errors?.time?.message}
+                </p>
+              ) : null}
             </div>
             <div className="flex flex-col gap-y-2">
               <label htmlFor="">Number Of Patients</label>
@@ -76,6 +92,11 @@ const CreateSchedule = () => {
                 )}
                 {...register("maxNumber")}
               />
+              {errors?.maxNumber ? (
+                <p className="text-[10px] text-red-600 text-semibold">
+                  {errors?.maxNumber?.message}
+                </p>
+              ) : null}
             </div>
 
             <Button

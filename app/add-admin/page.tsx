@@ -68,6 +68,11 @@ const Signup = () => {
                     "p-[.8rem] outline-none focus:outline-none rounded-[.2rem] border bg-gray-100"
                   )}
                 />
+                {errors?.name ? (
+                  <p className="text-[10px] text-red-600 text-semibold">
+                    {errors?.name?.message}
+                  </p>
+                ) : null}
               </div>
               <div className="flex flex-col gap-y-2">
                 <label htmlFor="email">Email</label>
@@ -78,6 +83,11 @@ const Signup = () => {
                     "p-[.8rem] outline-none focus:outline-none rounded-[.2rem] border bg-gray-100"
                   )}
                 />
+                {errors?.email ? (
+                  <p className="text-[10px] text-red-600 text-semibold">
+                    {errors?.email?.message}
+                  </p>
+                ) : null}
               </div>
               <div className="flex flex-col gap-y-2">
                 <label htmlFor="password">Password</label>
@@ -88,6 +98,11 @@ const Signup = () => {
                     "p-[.8rem] outline-none focus:outline-none rounded-[.2rem] border bg-gray-100"
                   )}
                 />
+                {errors?.password ? (
+                  <p className="text-[10px] text-red-600 text-semibold">
+                    {errors?.password?.message}
+                  </p>
+                ) : null}
               </div>
               <div className="flex flex-col gap-y-2">
                 <label htmlFor="phone">Phone</label>
@@ -98,6 +113,11 @@ const Signup = () => {
                     "p-[.8rem] outline-none focus:outline-none rounded-[.2rem] border bg-gray-100"
                   )}
                 />
+                {errors?.phone ? (
+                  <p className="text-[10px] text-red-600 text-semibold">
+                    {errors?.phone?.message}
+                  </p>
+                ) : null}
               </div>
               <Button
                 type="submit"

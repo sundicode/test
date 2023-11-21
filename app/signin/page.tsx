@@ -6,7 +6,7 @@ import cn from "@/utils/cn";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {useEffect } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 type pageProps = {};
@@ -74,6 +74,11 @@ const Signin = () => {
                     "p-[.8rem] outline-none focus:outline-none rounded-[.2rem] border bg-gray-100"
                   )}
                 />
+                {errors?.email ? (
+                  <p className="text-[10px] text-red-600 text-semibold">
+                    {errors?.email?.message}
+                  </p>
+                ) : null}
               </div>
               <div className="flex flex-col gap-y-2">
                 <label htmlFor="password">Password</label>
@@ -84,6 +89,11 @@ const Signin = () => {
                     "p-[.8rem] outline-none focus:outline-none rounded-[.2rem] border bg-gray-100"
                   )}
                 />
+                {errors?.password ? (
+                  <p className="text-[10px] text-red-600 text-semibold">
+                    {errors?.password?.message}
+                  </p>
+                ) : null}
               </div>
               <div className="flex justify-between items-end">
                 <input type="checkbox" />
