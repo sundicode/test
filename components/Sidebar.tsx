@@ -119,14 +119,14 @@ const Sidebar = () => {
         <div className="h-[100px]"></div>
         <ul>
           {sidebarLinks.map((option, index) => (
-            <li key={option.name}>
+            <ul key={option.name}>
               <li
                 key={option.name}
-                className="w-full pr-5 py-3 text-md pl-4 flex justify-between items-center"
+                className="w-full pr-5 py-3 text-md pl-4 flex justify-between items-center hover:bg-primary hover:text-white cursor-pointer"
+                onClick={() => handleSubmenuToggle(index)}
               >
                 <span>{option.name}</span>
                 <BiChevronRight
-                  onClick={() => handleSubmenuToggle(index)}
                   className={activeIndex === index ? "active rotate-90" : ""}
                 />
               </li>
@@ -145,7 +145,7 @@ const Sidebar = () => {
                   ))}
                 </ul>
               )}
-            </li>
+            </ul>
           ))}
         </ul>
       </nav>

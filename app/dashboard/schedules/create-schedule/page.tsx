@@ -1,24 +1,38 @@
 "use client";
 import Button from "@/components/Button";
+import MedicksApi from "@/utils/axios";
 import cn from "@/utils/cn";
-// import input from "@/components/Input";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 type TSchedule = {
   date: string;
   time: string;
   maxNumber: string;
 };
 const CreateSchedule = () => {
+  const [Loading, setLoading] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<TSchedule>();
-  const handleCreateSchedule: SubmitHandler<TSchedule> = async (
-    form: TSchedule
-  ) => {
-    console.log(form);
+  const router = useRouter();
+  const handleCreateSchedule: SubmitHandler<TSchedule> = (data: TSchedule) => {
+    MedicksApi.post("/schedule/create", data)
+      .then((res) => {
+        setLoading(true);
+        router.push("/dashboard/schedules/all-schedule");
+        toast.success("Successfully created schedule");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error?.response?.data?.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -67,6 +81,7 @@ const CreateSchedule = () => {
             <Button
               type="submit"
               className="w-full py-3 px-4 bg-primary text-white font-semibold"
+              disabled={Loading}
             >
               Create
             </Button>

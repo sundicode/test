@@ -2,14 +2,12 @@
 import Button from "@/components/Button";
 import Container from "@/components/Container";
 import cn from "@/utils/cn";
-import { useRouter } from "next/navigation";
-import axios from "axios";
-// import Input from "@/components/Input";
 import Image from "next/image";
-import Link from "next/link";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Toaster, toast } from "react-hot-toast";
+
+import MedicksApi from "@/utils/axios";
+import { toast } from "react-toastify";
 type pageProps = {};
 type TSignupForm = {
   email: string;
@@ -24,51 +22,27 @@ const Signup = () => {
     reset,
     formState: { errors, isSubmitSuccessful },
   } = useForm<TSignupForm>();
-
+  const [Loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     reset();
   }, [isSubmitSuccessful]);
-
-  const router = useRouter();
-  const handleSignup: SubmitHandler<TSignupForm> = async (
-    form: TSignupForm
-  ) => {
-    try {
-      const signup = await axios.post(
-        "http://localhost:4000/admin/signup",
-        form
-      );
-      const status = signup.status;
-      if (status == 201) {
-        router.push("/signin");
+  const handleSignup: SubmitHandler<TSignupForm> = (form: TSignupForm) => {
+    MedicksApi.post("/admin/signup", form)
+      .then((res) => {
+        setLoading(true);
         toast.success("Successfully created user");
-      }
-      console.log(status);
-    } catch (error) {
-      console.log(error);
-    }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error?.response?.data?.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
     <Container>
-      <Toaster
-        toastOptions={{
-          success: {
-            style: {
-              background: "green",
-              padding: "20px",
-            },
-          },
-          error: {
-            style: {
-              background: "red",
-              padding: "20px",
-            },
-          },
-        }}
-        position="top-center"
-        reverseOrder={false}
-      />
       <div className="w-full flex justify-center items-center min-h-screen text-sm">
         <div className="w-[50%] bg-login-bg rounded-[.3rem]">
           <div className="flex justify-between items-center font-semibold">
@@ -128,15 +102,10 @@ const Signup = () => {
               <Button
                 type="submit"
                 className="text-white bg-accent text-md font-bold py-3"
+                disabled={Loading}
               >
                 Sign up
               </Button>
-              <div className="flex justify-between items-center">
-                <span>Dont have an account</span>
-                <Link href={"/signin"} className="text-accent">
-                  Sign in
-                </Link>
-              </div>
             </form>
             <div className="w-[50%]">
               <Image

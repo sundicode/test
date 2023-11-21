@@ -1,12 +1,14 @@
 "use client";
 import Button from "@/components/Button";
 import Container from "@/components/Container";
+import MedicksApi from "@/utils/axios";
 import cn from "@/utils/cn";
-// import Input from "@/components/Input";
 import Image from "next/image";
 import Link from "next/link";
-import { FC } from "react";
+import { useRouter } from "next/navigation";
+import {useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 type pageProps = {};
 type TLoginForm = {
   email: string;
@@ -16,10 +18,25 @@ const Signin = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    reset,
+    formState: { errors, isSubmitSuccessful },
   } = useForm<TLoginForm>();
-  const hadleSignin = async (data: TLoginForm) => {
-    console.log(data);
+
+  useEffect(() => {
+    reset();
+  }, [isSubmitSuccessful]);
+
+  const router = useRouter();
+  const hadleSignin = (data: TLoginForm) => {
+    MedicksApi.post("/admin/signin", data)
+      .then((res) => {
+        router.push("/dashboard/schedules/all-schedule");
+        toast.success("Successfully created user");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error?.response?.data?.message);
+      });
   };
   return (
     <Container>
