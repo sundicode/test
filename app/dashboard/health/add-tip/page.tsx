@@ -6,6 +6,7 @@ const CreateHealthTip = () => {
   const [value, setValue] = useState("");
   return (
     <form>
+      <input type="text" name="" id="" />
       <Button>Create Post</Button>
     </form>
   );
