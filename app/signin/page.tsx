@@ -23,9 +23,10 @@ const Signin = () => {
   } = useForm<TLoginForm>();
 
   useEffect(() => {
-    reset();
-  }, [isSubmitSuccessful]);
-
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
   const router = useRouter();
   const hadleSignin = (data: TLoginForm) => {
     MedicksApi.post("/admin/signin", data)

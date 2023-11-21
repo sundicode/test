@@ -21,9 +21,10 @@ const CreateSchedule = () => {
   } = useForm<TSchedule>();
 
   useEffect(() => {
-    reset();
-  }, [isSubmitSuccessful]);
-
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
   const router = useRouter();
   const handleCreateSchedule: SubmitHandler<TSchedule> = (data: TSchedule) => {
     MedicksApi.post("/schedule/create", data)

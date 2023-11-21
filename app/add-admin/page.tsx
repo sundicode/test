@@ -24,8 +24,10 @@ const Signup = () => {
   } = useForm<TSignupForm>();
   const [Loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
-    reset();
-  }, [isSubmitSuccessful]);
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
   const handleSignup: SubmitHandler<TSignupForm> = (form: TSignupForm) => {
     MedicksApi.post("/admin/signup", form)
       .then((res) => {
