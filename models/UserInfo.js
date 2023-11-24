@@ -4,5 +4,8 @@ const userInfo = new Schema({
   medicalReciet: { type: String },
   schoolfeeReciet: { type: String },
 });
-const userInfoSchema = models.UserInfo || model("UserInfo", userInfo);
+
+const userInfoSchema = mongoose.modelNames().includes("UserInfo")
+  ? model("UserInfo")
+  : model("UserInfo", userInfo);
 export default userInfoSchema;
