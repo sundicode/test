@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const MedicksApi = axios.create({
-  baseURL: "http://52.22.51.50",
+  baseURL: "/api",
   withCredentials: true,
 });
 

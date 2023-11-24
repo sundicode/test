@@ -30,7 +30,7 @@ type TSchedule = {
 };
 const AllSchedules = () => {
   const getAllSchedules = async () => {
-    const res = await MedicksApi.get("/schedule/admin");
+    const res = await MedicksApi.get("/schedules/admin");
     return res.data;
   };
   const { data, error, isLoading } = useQuery({
@@ -42,6 +42,9 @@ const AllSchedules = () => {
   const handleClick = (matricule: string) => {
     router.push(`/dashboard/schedules/all-schedule/${matricule}`);
   };
+
+  console.log(error);
+  
 
   if (isLoading) return <LoadingState />;
   if (error) return <ErrorComponent message={error.message} status={500} />;

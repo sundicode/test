@@ -27,7 +27,7 @@ const CreateSchedule = () => {
   }, [isSubmitSuccessful, reset]);
   const router = useRouter();
   const handleCreateSchedule: SubmitHandler<TSchedule> = (data: TSchedule) => {
-    MedicksApi.post("/schedule/create", data)
+    MedicksApi.post("/schedules/create", data)
       .then((res) => {
         setLoading(true);
         router.push("/dashboard/schedules/all-schedule");
