@@ -3,12 +3,10 @@ import Button from "@/components/Button";
 import Container from "@/components/Container";
 import cn from "@/utils/cn";
 import Image from "next/image";
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-
 import MedicksApi from "@/utils/axios";
 import { toast } from "react-toastify";
-type pageProps = {};
 type TSignupForm = {
   email: string;
   password: string;
@@ -126,7 +124,7 @@ const Signup = () => {
                 className="text-white bg-accent text-md font-bold py-3"
                 disabled={Loading}
               >
-                Sign up
+                Add Admin
               </Button>
             </form>
             <div className="w-[50%]">

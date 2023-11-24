@@ -4,6 +4,7 @@ import LoadingState from "@/components/LoadingState";
 import MedicksApi from "@/utils/axios";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { BiEdit, BiPen, BiTrash } from "react-icons/bi";
 
 type TUser = {
   _id: string;
@@ -64,14 +65,24 @@ const AllSchedules = () => {
                       {schedules.time}{" "}
                       {Number(schedules.time.split(":")[0]) > 12 ? "pm" : "am"}
                     </p>
+                    <div className="flex gap-x-4">
+                      <BiTrash
+                        size={20}
+                        className="text-red-500 cursor-pointer"
+                        titles={"Delete Schedule"}
+                      />
+                      <BiEdit
+                        size={20}
+                        className="text-green-500  cursor-pointer"
+                        titles={"Update Schedule"}
+                      />
+                    </div>
                   </div>
                 ) : (
                   <>
                     <div className=" w-full flex justify-end text-sm font-bold gap-4">
                       <p> {new Date(schedules.date).toDateString()}</p>
-                      <p>
-                        {schedules.time}
-                      </p>
+                      <p>{schedules.time}</p>
                     </div>
 
                     <table className="text-[11px] w-full text-center bg-light text-slate-800">

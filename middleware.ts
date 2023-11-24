@@ -5,19 +5,16 @@ export const middleware = (req: NextRequest) => {
   const cookie = req.cookies.get("AdminToken")?.value || "";
   const isPublic = parth === "/signin";
   console.log("cookies", req.cookies);
-  console.log("creadential",req.credentials);
+  console.log("creadential", req.credentials);
 
   if (isPublic && cookie) {
-    return NextResponse.redirect(
-      new URL("/dashboard/schedules/all-schedule", req.nextUrl)
-    );
+    return NextResponse.redirect(new URL("/", req.nextUrl));
   }
   if (!isPublic && !cookie) {
     return NextResponse.redirect(new URL("/signin", req.nextUrl));
   }
-  
 };
 
 export const config = {
-  matcher: ["/signin", "/dashboard/:path*",'/','/add-admin'],
+  matcher: ["/signin", "/dashboard/:path*", "/", "/add-admin"],
 };

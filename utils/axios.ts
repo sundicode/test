@@ -1,8 +1,7 @@
 import axios from "axios";
 
 const MedicksApi = axios.create({
-  baseURL: "http://localhost:4000",
-  timeout: 3000,
+  baseURL: "http://52.22.51.50",
   withCredentials: true,
 });
 

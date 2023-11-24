@@ -106,12 +106,6 @@ const Signin = () => {
               >
                 Login
               </Button>
-              <div className="flex justify-between items-center">
-                <span>Dony&apos;t have an account</span>
-                <Link href={"/signup"} className="text-accent">
-                  Sign up
-                </Link>
-              </div>
             </form>
           </div>
         </div>

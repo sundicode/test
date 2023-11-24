@@ -1,7 +1,12 @@
+"use client";
+import MedicksApi from "@/utils/axios";
 import Image from "next/image";
 import React from "react";
 import { BiBell, BiMoon, BiSearch, BiTime } from "react-icons/bi";
-
+const adminProfile = async () => {
+  const adminProfileInfo = await MedicksApi.get(`/admin/profile`);
+  return adminProfileInfo.data?.admin;
+};
 const Navbar = () => {
   return (
     <header className="bg-secondary p-4 w-full flex justify-between text-sm pr-16 relative">
@@ -11,7 +16,7 @@ const Navbar = () => {
           <div className="flex items-center bg-white rounded-[30px] h-[30px] px-3">
             <BiSearch className="text-gray-500" />
             <input
-              className="rounded-[30px] py-[.1rem] bg-transparent"
+              className="rounded-[30px] py-[.1rem] bg-transparent focus:outline-none"
               placeholder="search"
             />
           </div>
@@ -24,7 +29,9 @@ const Navbar = () => {
         <div></div>
         <div className="relative">
           <div className="w-[90px] h-[90px] rounded-full bg-white absolute right-6 -top-9 flex justify-center items-center">
-            <div className="w-[80px] h-[80px] rounded-full border-[10px] border-accent"></div>
+            <div className="w-[80px] h-[80px] rounded-full border-[10px] border-accent">
+              
+            </div>
           </div>
         </div>
       </div>
