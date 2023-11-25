@@ -11,7 +11,8 @@ import Button from "@/components/Button";
 import { useQuery } from "@tanstack/react-query";
 import ErrorComponent from "@/components/ErrorComponent";
 import LoadingState from "@/components/LoadingState";
-type Schedule = {
+import { twMerge } from "tailwind-merge";
+export type Schedule = {
   time: string;
   date: string;
   numberOfPatients: string;
@@ -128,7 +129,10 @@ const UpdateScedule = ({ params }: { params: { scheduleId: string } }) => {
 
               <Button
                 type="submit"
-                className="w-full py-3 px-4 bg-primary text-white font-semibold"
+                className={twMerge(
+                  "w-full py-3 px-4 bg-primary text-white font-semibold",
+                  Loading && "hidden"
+                )}
                 disabled={Loading}
               >
                 Create

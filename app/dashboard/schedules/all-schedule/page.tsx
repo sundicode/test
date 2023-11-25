@@ -71,7 +71,7 @@ const AllSchedules = () => {
                         titles={"Delete Schedule"}
                         onClick={() =>
                           router.push(
-                            `/dashboard/schedules/update/${schedules._id}`
+                            `/dashboard/schedules/remove/${schedules._id}`
                           )}
                       />
                       <BiEdit

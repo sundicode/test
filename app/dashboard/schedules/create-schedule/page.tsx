@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { twMerge } from "tailwind-merge";
 export type TSchedule = {
   date: string;
   time: string;
@@ -102,7 +103,10 @@ const CreateSchedule = () => {
 
             <Button
               type="submit"
-              className="w-full py-3 px-4 bg-primary text-white font-semibold"
+              className={twMerge(
+                "w-full py-3 px-4 bg-primary text-white font-semibold",
+                Loading && "hidden"
+              )}
               disabled={Loading}
             >
               Create
