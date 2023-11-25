@@ -16,7 +16,7 @@ type Schedule = {
   date: string;
   numberOfPatients: string;
 };
-const page = ({ params }: { params: { scheduleId: string } }) => {
+const UpdateScedule = ({ params }: { params: { scheduleId: string } }) => {
   const userRecord = async (id: string) => {
     const userRecodInfo = await MedicksApi.get(`/schedules/${id}`);
     return userRecodInfo.data as Schedule;
@@ -141,4 +141,4 @@ const page = ({ params }: { params: { scheduleId: string } }) => {
   );
 };
 
-export default page;
+export default UpdateScedule;
