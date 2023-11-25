@@ -6,9 +6,10 @@ import { errorCodes } from "@/utils/errorCode";
 import { registerSchema } from "@/utils/usersValidate";
 connect();
 export async function POST(req: NextRequest) {
+  const origin = req.headers.get("origin");
   try {
     const body = await req.json();
-    const existingUser = await Users.findOne({ matricule: body.matricule});
+    const existingUser = await Users.findOne({ matricule: body.matricule });
     if (
       !body.name ||
       !body.email ||
