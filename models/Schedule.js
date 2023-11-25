@@ -5,5 +5,5 @@ const scheduleSchema = new Schema({
   numberOfPatients: { type: Number, required: true },
   patient: [{ type: Schema.Types.ObjectId, ref: "UserInfo", populate: true }],
 });
-const userSchema = models.Schedule || model("Schedule", scheduleSchema);
-export default userSchema;
+const schedules = models.Schedule || model("Schedule", scheduleSchema);
+export default schedules;

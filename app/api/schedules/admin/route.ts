@@ -1,5 +1,6 @@
 import { NextResponse as res } from "next/server";
 import Schedules from "@/models/Schedule";
+import UserInfoSchema from "@/models/UserInfo";
 import { errorCodes } from "@/utils/errorCode";
 import { connect } from "@/utils/connectDb";
 connect();
@@ -10,6 +11,7 @@ export async function GET() {
     const month = date[1];
     const day = date[2].split("T")[0];
     const currentDate = `${year}-${month}-${day}`;
+    console.log(currentDate);
     const popObj = {
       path: "patient",
       populate: {

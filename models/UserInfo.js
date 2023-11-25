@@ -5,7 +5,5 @@ const userInfo = new Schema({
   schoolfeeReciet: { type: String },
 });
 
-const userInfoSchema = mongoose.modelNames().includes("UserInfo")
-  ? model("UserInfo")
-  : model("UserInfo", userInfo);
+const userInfoSchema =  models.UserInfo || model("UserInfo", userInfo);
 export default userInfoSchema;
