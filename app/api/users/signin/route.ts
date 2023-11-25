@@ -1,7 +1,7 @@
 import Users from "@/models/User";
 import { errorCodes } from "@/utils/errorCode";
 import { signAdminToken } from "@/utils/generateToken";
-import { adminSigninSchema, registerSchema } from "@/utils/usersValidate";
+import { loginSchema } from "@/utils/usersValidate";
 import bcrypt from "bcrypt";
 import { NextRequest, NextResponse as res } from "next/server";
 export async function POST(req: NextRequest) {
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
         { error: "All Feilds are required" },
         { status: errorCodes.badRequest }
       );
-    const { error, value } = registerSchema.validate(body);
+    const { error, value } = loginSchema.validate(body);
     if (!user)
       return res.json(
         { error: "Wrong email or password" },
