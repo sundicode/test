@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-type TSchedule = {
+export type TSchedule = {
   date: string;
   time: string;
   maxNumber: string;

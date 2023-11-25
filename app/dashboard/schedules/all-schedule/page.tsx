@@ -42,10 +42,6 @@ const AllSchedules = () => {
   const handleClick = (matricule: string) => {
     router.push(`/dashboard/schedules/all-schedule/${matricule}`);
   };
-
-  console.log(error);
-  
-
   if (isLoading) return <LoadingState />;
   if (error) return <ErrorComponent message={error.message} status={500} />;
   return (
@@ -71,13 +67,22 @@ const AllSchedules = () => {
                     <div className="flex gap-x-4">
                       <BiTrash
                         size={20}
-                        className="text-red-500 cursor-pointer"
+                        className="text-red-500 cursor-pointer hover:text-red-400"
                         titles={"Delete Schedule"}
+                        onClick={() =>
+                          router.push(
+                            `/dashboard/schedules/update/${schedules._id}`
+                          )}
                       />
                       <BiEdit
                         size={20}
-                        className="text-green-500  cursor-pointer"
+                        className="text-green-500  cursor-pointer hover:text-green-400"
                         titles={"Update Schedule"}
+                        onClick={() =>
+                          router.push(
+                            `/dashboard/schedules/update/${schedules._id}`
+                          )
+                        }
                       />
                     </div>
                   </div>
