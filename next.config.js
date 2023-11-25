@@ -17,7 +17,7 @@ const nextConfig = {
           {
             key: "Access-Control-Allow-Origin",
             value: 
-              "*,http://localhost:3000,https://mediks-project.vercel.app",
+              "https://mediks-project.vercel.app",
           },
           {
             key: "Access-Control-Allow-Methods",
