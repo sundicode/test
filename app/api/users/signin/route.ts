@@ -1,14 +1,25 @@
-import Users from "@/models/User";
+import prisma from "@/prisma/prisma";
 import { errorCodes } from "@/utils/errorCode";
-import { signAccessToken, signAdminToken } from "@/utils/generateToken";
+import { signAccessToken } from "@/utils/generateToken";
 import { loginSchema } from "@/utils/usersValidate";
 import bcrypt from "bcrypt";
 import { NextRequest, NextResponse as res } from "next/server";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return res.json({}, { headers: corsHeaders });
+}
 export async function POST(req: NextRequest) {
-  const origin = req.headers.get("origin");
   try {
     const body = await req.json();
-    const user = await Users.findOne({ matricule: body.matricule });
+    const user = await prisma.users.findUnique({
+      where: { matricule: body.matricule },
+    });
     if (!body.matricule || !body.password)
       return res.json(
         { error: "All Feilds are required" },
@@ -35,7 +46,7 @@ export async function POST(req: NextRequest) {
       { message: "Log in sucessfull" },
       { status: 200 }
     );
-    const token = signAccessToken(user._id, user.email, user.role, response);
+    const token = signAccessToken(user.id, user.email, user.role, response);
     return response;
   } catch (error: any) {
     return res.json(

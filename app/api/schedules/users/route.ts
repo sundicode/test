@@ -1,24 +1,28 @@
 import { NextRequest, NextResponse as res } from "next/server";
-import Schedules from "@/models/Schedule";
+import prisma from "@/prisma/prisma";
 import { errorCodes } from "@/utils/errorCode";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return res.json({}, { headers: corsHeaders });
+}
 export async function GET(req: NextRequest) {
-  const origin = req.headers.get("origin");
   try {
     const date = new Date().toISOString().split("-");
     const year = date[0];
     const month = date[1];
     const day = date[2].split("T")[0];
     const currentDate = `${year}-${month}-${day}`;
-    const todaysSchedule = await Schedules.find({ date: currentDate }).select(
-      "_id time date"
-    );
-    if (!todaysSchedule) return res.json({ schedule: null }, { status: 200 });
-    return new res(JSON.stringify(todaysSchedule), {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": origin || "*",
-      },
+    const todaysSchedule = await prisma.schedules.findMany({
+      where: { date: currentDate },
     });
+    if (!todaysSchedule) return res.json({ schedule: null }, { status: 200 });
+    return res.json({ todaysSchedule }, { status: 200 });
   } catch (error: any) {
     return res.json(
       { error: error?.message },

@@ -1,8 +1,17 @@
-import schedules from "@/models/Schedule";
-import { connect } from "@/utils/connectDb";
+import prisma from "@/prisma/prisma";
 import { errorCodes } from "@/utils/errorCode";
 import { NextRequest, NextResponse as res } from "next/server";
-connect();
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return res.json({}, { headers: corsHeaders });
+}
+
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { scheduleId: string } }
@@ -10,7 +19,7 @@ export async function PATCH(
   try {
     const id = params.scheduleId;
     const body = await req.json();
-    const schedule = await schedules.findById({ _id: id });
+    const schedule = await prisma.schedules.findUnique({ where: { id } });
 
     if (!schedule || schedule === null)
       return res.json(
@@ -18,12 +27,12 @@ export async function PATCH(
         { status: 404, statusText: "Not Found" }
       );
 
-    const updateSchedule = await schedule.updateOne(
-      { _id: id },
-      { $set: { ...body } }
-    );
+    const updateSchedule = await prisma.schedules.update({
+      where: { id },
+      data: { ...body },
+    });
 
-    if (updateSchedule.updatedCount > 0) {
+    if (updateSchedule) {
       return res.json(
         { message: "Schedule updated" },
         { status: 200, statusText: "Success" }
@@ -47,15 +56,19 @@ export async function DELETE(
 ) {
   try {
     const id = params.scheduleId;
-    const schedule = await schedules.findById({ _id: id });
-    const schedulePatients = schedule.patient;
+    const schedule = await prisma.schedules.findUnique({
+      where: { id },
+      include: { patient: true },
+    });
+
+    const schedulePatients = schedule?.patient;
     if (!schedule || schedule === null)
       return res.json(
         { message: "Schedule not found" },
         { status: 404, statusText: "Not Found" }
       );
 
-    if (schedulePatients.length > 0)
+    if ((schedulePatients?.length as number) > 0)
       return res.json(
         {
           message: "docunments already submited can only update time add date",
@@ -63,8 +76,8 @@ export async function DELETE(
         { status: 400, statusText: "Bad request" }
       );
 
-    const deleteSchedule = await schedule.deleteOne({ _id: id });
-    if (deleteSchedule.deletedCount > 0) {
+    const deleteSchedule = await prisma.schedules.delete({ where: { id } });
+    if (deleteSchedule) {
       return res.json(
         { message: "Schedule deleted" },
         { status: 200, statusText: "Success" }
@@ -88,8 +101,9 @@ export async function GET(
 ) {
   try {
     const id = params.scheduleId;
-    const schedule = await schedules.findById({ _id: id });
-
+    const schedule = await prisma.schedules.findUnique({
+      where: { id },
+    });
     if (!schedule || schedule === null)
       return res.json(
         { message: "Schedule not found" },
@@ -100,7 +114,7 @@ export async function GET(
         time: schedule.time,
         date: schedule.date,
         numberOfPatients: schedule.numberOfPatients,
-        id: schedule._id,
+        id: schedule.id,
       },
       { status: 200 }
     );

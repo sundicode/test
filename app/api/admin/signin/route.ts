@@ -1,15 +1,26 @@
-import adminModel from "@/models/Admin";
-import { connect } from "@/utils/connectDb";
+import prisma from "@/prisma/prisma";
 import { errorCodes } from "@/utils/errorCode";
 import { signAdminToken } from "@/utils/generateToken";
 import { adminSigninSchema } from "@/utils/usersValidate";
 import bcrypt from "bcrypt";
 import { NextRequest, NextResponse as res } from "next/server";
-connect();
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return res.json({}, { headers: corsHeaders });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const admin = await adminModel.findOne({ email: body.email });
+    const admin = await prisma.admins.findUnique({
+      where: { email: body.email },
+    });
     if (!body.email || !body.password)
       return res.json(
         { error: "All Feilds are required" },
@@ -36,7 +47,7 @@ export async function POST(req: NextRequest) {
       { message: "user logged in sucessfully" },
       { status: 200 }
     );
-    const token = signAdminToken(admin._id, admin.email, admin.role, response);
+    const token = signAdminToken(admin.id, admin.email, admin.role, response);
     return response;
   } catch (error: any) {
     return res.json(

@@ -1,10 +1,24 @@
 import { errorCodes } from "@/utils/errorCode";
-import Schedule from "@/models/Schedule";
 import { NextRequest, NextResponse as res } from "next/server";
+import prisma from "@/prisma/prisma";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return res.json({}, { headers: corsHeaders });
+}
 export async function POST(req: NextRequest) {
   try {
     const { time, date, maxNumber } = await req.json();
-    const existingSchedule = await Schedule.findOne({ time: time });
+    const existingSchedule = await prisma.schedules.findUnique({
+      where: {
+        time: time,
+      },
+    });
     if (existingSchedule)
       return res.json(
         { error: "Schedule already Exist" },
@@ -16,12 +30,14 @@ export async function POST(req: NextRequest) {
         { error: "All Feilds are required" },
         { status: errorCodes.badRequest }
       );
-    const newSchedule = new Schedule({
-      date: date,
-      time,
-      numberOfPatients: maxNumber,
+    const schedule = await prisma.schedules.create({
+      data: {
+        time,
+        date,
+        numberOfPatients: maxNumber,
+        adminId: "",
+      },
     });
-    const schedule = await newSchedule.save();
     if (!schedule)
       return res.json(
         { error: "Schedule could not be created" },

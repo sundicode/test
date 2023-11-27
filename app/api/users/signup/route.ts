@@ -1,15 +1,31 @@
-import { connect } from "@/utils/connectDb";
 import { NextRequest, NextResponse as res } from "next/server";
-import Users from "@/models/User";
 import bcrypt from "bcrypt";
 import { errorCodes } from "@/utils/errorCode";
 import { registerSchema } from "@/utils/usersValidate";
-connect();
+import prisma from "@/prisma/prisma";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return res.json({}, { headers: corsHeaders });
+}
+interface UserSignup {
+  name: string;
+  email: string;
+  matricule: string;
+  password: string;
+  department: string;
+}
 export async function POST(req: NextRequest) {
-  const origin = req.headers.get("origin");
   try {
-    const body = await req.json();
-    const existingUser = await Users.findOne({ matricule: body.matricule });
+    const body = (await req.json()) as UserSignup;
+    const existingUser = await prisma.users.findUnique({
+      where: { matricule: body.matricule },
+    });
     if (
       !body.name ||
       !body.email ||
@@ -33,14 +49,15 @@ export async function POST(req: NextRequest) {
         { status: errorCodes.badRequest }
       );
     const savePassword = await bcrypt.hash(body.password, 10);
-    const newUser = new Users({
-      matricule: value.matricule,
-      username: value.name,
-      email: value.email,
-      password: savePassword,
-      department: value.department,
+    const user = await prisma.users.create({
+      data: {
+        matricule: value.matricule,
+        username: value.name,
+        email: value.email,
+        password: savePassword,
+        department: value.department,
+      },
     });
-    const user = await newUser.save();
     if (!user)
       return res.json(
         { error: "Error creating admin" },
