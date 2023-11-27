@@ -13,23 +13,21 @@ export async function OPTIONS() {
 }
 export async function GET(req: NextRequest) {
   try {
-    const admin = req.cookies.get("AdminToken")?.value;
-    console.log(admin);
-
     const date = new Date().toISOString().split("-");
     const year = date[0];
     const month = date[1];
     const day = date[2].split("T")[0];
     const currentDate = `${year}-${month}-${day}`;
-  
-    const todaysSchedule = prisma.schedules.findMany({
+
+    const todaysSchedule = await prisma.schedules.findMany({
       where: { date: currentDate },
+      include: {
+        patient: true,
+      },
     });
 
-    return res.json({ schedule: todaysSchedule }, { status: 200 });
+    return res.json(todaysSchedule, { status: 200 });
   } catch (error: any) {
-    console.log(error);
-
     return res.json(
       { error: error?.message },
       { status: errorCodes.serverError }

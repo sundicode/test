@@ -26,15 +26,13 @@ import {
 export const middleware = (req: NextRequest) => {
   const origin = req.headers.get("origin");
   console.log(origin);
-  
+
   // if (origin && !allEviroment.includes(origin))
   //   return new NextResponse(null, { status: 400, statusText: "bad request" });
 
   const parth = req.nextUrl.pathname;
   const cookie = req.cookies.get("AdminToken")?.value || "";
   const isPublic = parth === "/signin";
-  console.log("cookies", req.cookies);
-  console.log("creadential", req.credentials);
 
   if (isPublic && cookie) {
     return NextResponse.redirect(new URL("/", req.nextUrl));

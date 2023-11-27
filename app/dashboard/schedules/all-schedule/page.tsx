@@ -15,14 +15,14 @@ type TUser = {
 };
 
 export type TPatient = {
-  _id: string;
+  id: string;
   user: TUser;
   medicalReciet: string;
   schoolfeeReciet: string;
 };
 
 type TSchedule = {
-  _id: string;
+  id: string;
   patient: [];
   numberOfPatients: number;
   date: string;
@@ -37,6 +37,7 @@ const AllSchedules = () => {
     queryKey: ["schedules"],
     queryFn: getAllSchedules,
   });
+  console.log(data);
 
   const router = useRouter();
   const handleClick = (matricule: string) => {
@@ -50,12 +51,12 @@ const AllSchedules = () => {
       <div className="w-full h-[1px] bg-light"></div>
 
       <div className="w-[80%] mx-auto mt-10">
-        {data?.schedule.length === 0 ? (
+        {data.length === 0 ? (
           <div>No schedule Today</div>
         ) : (
           <div>
-            {data?.schedule.map((schedules: TSchedule) => (
-              <div key={schedules._id} className="mb-8">
+            {data.map((schedules: TSchedule) => (
+              <div key={schedules.id} className="mb-8">
                 {schedules.patient.length === 0 ? (
                   <div className=" flex justify-center gap-2 text-primary font-semibold text-sm">
                     No Booking made for{" "}
@@ -71,8 +72,9 @@ const AllSchedules = () => {
                         titles={"Delete Schedule"}
                         onClick={() =>
                           router.push(
-                            `/dashboard/schedules/remove/${schedules._id}`
-                          )}
+                            `/dashboard/schedules/remove/${schedules.id}`
+                          )
+                        }
                       />
                       <BiEdit
                         size={20}
@@ -80,7 +82,7 @@ const AllSchedules = () => {
                         titles={"Update Schedule"}
                         onClick={() =>
                           router.push(
-                            `/dashboard/schedules/update/${schedules._id}`
+                            `/dashboard/schedules/update/${schedules.id}`
                           )
                         }
                       />
@@ -108,7 +110,7 @@ const AllSchedules = () => {
                           <tr
                             className="border border-solid border-l-0 border-r-0 hover:bg-primary hover:text-white duration-200 cursor-pointer"
                             onClick={() => handleClick(patients.user.matricule)}
-                            key={patients._id}
+                            key={patients.id}
                           >
                             <td className="text-sm  px-6 py-3">
                               {index + 1 < 10 ? `0${index + 1}` : index + 1}

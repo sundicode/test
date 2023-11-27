@@ -23,9 +23,6 @@ interface UserSignup {
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as UserSignup;
-    const existingUser = await prisma.users.findUnique({
-      where: { matricule: body.matricule },
-    });
     if (
       !body.name ||
       !body.email ||
@@ -33,21 +30,37 @@ export async function POST(req: NextRequest) {
       !body.matricule ||
       !body.department
     )
-      return res.json(
-        { error: "All Feilds are required" },
-        { status: errorCodes.badRequest }
-      );
+      return new res(JSON.stringify({ message: "All fields are required" }), {
+        status: errorCodes.badRequest,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
     const { error, value } = registerSchema.validate(body);
+    const existingMatricule = await prisma.users.findUnique({
+      where: { matricule: value.matricule },
+    });
+
+    const existingEmail = await prisma.users.findUnique({
+      where: { matricule: value.email },
+    });
     if (error)
-      return res.json(
-        { error: error.message },
-        { status: errorCodes.badRequest }
-      );
-    if (existingUser)
-      return res.json(
-        { error: "User already exist" },
-        { status: errorCodes.badRequest }
-      );
+      return new res(JSON.stringify({ message: error.message }), {
+        status: errorCodes.badRequest,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+    if (existingMatricule || existingEmail)
+    return new res(JSON.stringify({ message: "User already exist" }), {
+      status: errorCodes.badRequest,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
     const savePassword = await bcrypt.hash(body.password, 10);
     const user = await prisma.users.create({
       data: {
@@ -59,15 +72,27 @@ export async function POST(req: NextRequest) {
       },
     });
     if (!user)
-      return res.json(
-        { error: "Error creating admin" },
-        { status: errorCodes.serverError }
-      );
-    return res.json({ message: "User created successfully" }, { status: 201 });
+      return new res(JSON.stringify({ message: "User created successfully" }), {
+        status: errorCodes.serverError,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+    return new res(JSON.stringify({ message: "User created successfully" }), {
+      status: 201,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
   } catch (error: any) {
-    return res.json(
-      { error: error?.message },
-      { status: errorCodes.serverError }
-    );
+    return new res(JSON.stringify({ message: error.message }), {
+      status: errorCodes.badRequest,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
   }
 }

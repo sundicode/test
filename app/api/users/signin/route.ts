@@ -17,41 +17,53 @@ export async function OPTIONS() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const user = await prisma.users.findUnique({
-      where: { matricule: body.matricule },
-    });
     if (!body.matricule || !body.password)
-      return res.json(
-        { error: "All Feilds are required" },
-        { status: errorCodes.badRequest }
-      );
+      return new res(JSON.stringify({ message: "All fields are required" }), {
+        status: errorCodes.badRequest,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
     const { error, value } = loginSchema.validate(body);
-    if (!user)
-      return res.json(
-        { error: "Wrong email or password" },
-        { status: errorCodes.badRequest }
-      );
+    const user = await prisma.users.findUnique({
+      where: { matricule: value.matricule },
+    });
     if (error)
       return res.json(
         { message: error.message },
         { status: errorCodes.badRequest }
       );
+
+    if (!user)
+      return new res(JSON.stringify({ error: "Wrong email or password" }), {
+        status: errorCodes.badRequest,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
     const decryptedPassword = bcrypt.compare(body.password, user?.password);
     if (!decryptedPassword)
-      return res.json(
-        { error: "Wrong email or password" },
-        { status: errorCodes.badRequest }
-      );
-    const response = res.json(
-      { message: "Log in sucessfull" },
-      { status: 200 }
-    );
+      return new res(JSON.stringify({ error: "Wrong email or password" }), {
+        status: errorCodes.badRequest,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+    const response = new res(JSON.stringify({ message: "Log in sucessfull" }), {
+      status: 200,
+    });
     const token = signAccessToken(user.id, user.email, user.role, response);
     return response;
   } catch (error: any) {
-    return res.json(
-      { error: error?.message },
-      { status: errorCodes.serverError }
-    );
+    return new res(JSON.stringify({ message: error.message }), {
+      status: errorCodes.badRequest,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
   }
 }

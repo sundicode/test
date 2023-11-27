@@ -19,7 +19,11 @@ export async function GET(req: NextRequest) {
     const day = date[2].split("T")[0];
     const currentDate = `${year}-${month}-${day}`;
     const todaysSchedule = await prisma.schedules.findMany({
-      where: { date: currentDate },
+      where: {
+        date: {
+          gte: currentDate,
+        },
+      },
     });
     if (!todaysSchedule) return res.json({ schedule: null }, { status: 200 });
     return res.json({ todaysSchedule }, { status: 200 });

@@ -13,16 +13,18 @@ export async function OPTIONS() {
 }
 export async function GET(req: NextRequest) {
   try {
-    const response = res.json(
-      { message: "Login successfull" },
-      { status: 200 }
-    );
+    const response = new res(JSON.stringify({ message: "Login successfull" }), {
+      status: 200,
+    });
     userLogoutToken(response);
     return response;
   } catch (error: any) {
-    return res.json(
-      { error: error?.message },
-      { status: errorCodes.serverError }
-    );
+    return new res(JSON.stringify({ message: error.message }), {
+      status: errorCodes.badRequest,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
   }
 }

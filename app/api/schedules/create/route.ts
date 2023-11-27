@@ -14,6 +14,13 @@ export async function OPTIONS() {
 export async function POST(req: NextRequest) {
   try {
     const { time, date, maxNumber } = await req.json();
+
+    if (!date || !time)
+      return res.json(
+        { error: "All Feilds are required" },
+        { status: errorCodes.badRequest }
+      );
+
     const existingSchedule = await prisma.schedules.findUnique({
       where: {
         time: time,
@@ -25,17 +32,16 @@ export async function POST(req: NextRequest) {
         { status: errorCodes.badRequest }
       );
 
-    if (!date || !time)
-      return res.json(
-        { error: "All Feilds are required" },
-        { status: errorCodes.badRequest }
-      );
+    const numberOfPatients = Number(maxNumber);
     const schedule = await prisma.schedules.create({
       data: {
         time,
         date,
-        numberOfPatients: maxNumber,
-        adminId: "",
+        numberOfPatients,
+        adminId: "65643f81be877c2651a13250",
+      },
+      include: {
+        patient: true,
       },
     });
     if (!schedule)

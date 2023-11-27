@@ -1,6 +1,7 @@
 import { errorCodes } from "@/utils/errorCode";
 import { NextRequest, NextResponse as res } from "next/server";
 import prisma from "@/prisma/prisma";
+import { uploadToS3Bucket } from "@/utils/uploadToS3";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,15 +14,25 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: NextRequest) {
-  const origin = req.headers.get("origin");
   try {
     const data = await req.formData();
-    const medicalReceipt: File | null = data.get(
-      "medicalReciept"
-    ) as unknown as File;
+    const medicalReceipt: File | null = data.get("medical") as unknown as File;
     const schoolfeeReceipt: File | null = data.get(
-      "schoolfeeReceipt"
+      "schoolfee"
     ) as unknown as File;
+
+    const sceduleId = data.get("id") as string;
+    if (!sceduleId || sceduleId === null)
+      return res.json({ message: "Please choose a schedule" }, { status: 400 });
+    if (!medicalReceipt || !schoolfeeReceipt) {
+      return new res(JSON.stringify({ message: "all feilds are required" }), {
+        status: errorCodes.badRequest,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+    }
 
     const medicalByte = await medicalReceipt.arrayBuffer();
     const schoolfeeByte = await schoolfeeReceipt.arrayBuffer();
@@ -29,11 +40,24 @@ export async function POST(req: NextRequest) {
     const schoolfeeBuffer = Buffer.from(schoolfeeByte);
     const medicalsBuffer = Buffer.from(medicalByte);
 
-    return res.json({});
-  } catch (error: any) {
-    return res.json(
-      { error: error?.message },
-      { status: errorCodes.serverError }
+    const results = await uploadToS3Bucket(
+      [medicalsBuffer, schoolfeeBuffer],
+      [medicalReceipt.name, schoolfeeReceipt.name]
     );
+
+    // await prisma.userinfos.create({
+    //   data: {
+
+    //   },
+    // });
+    return res.json({ results });
+  } catch (error: any) {
+    return new res(JSON.stringify({ message: error.message }), {
+      status: errorCodes.badRequest,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
   }
 }
