@@ -26,11 +26,20 @@ export async function GET(req: NextRequest) {
       },
     });
     if (!todaysSchedule) return res.json({ schedule: null }, { status: 200 });
-    return res.json({ todaysSchedule }, { status: 200 });
+    return new res(JSON.stringify({ todaysSchedule }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
   } catch (error: any) {
-    return res.json(
-      { error: error?.message },
-      { status: errorCodes.serverError }
-    );
+    return new res(JSON.stringify({ message: error.message }), {
+      status: errorCodes.badRequest,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
   }
 }

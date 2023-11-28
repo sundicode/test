@@ -1,11 +1,6 @@
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
-const signAccessToken = (
-  userId: string,
-  matricule: string,
-  role: string,
-  res: NextResponse
-) => {
+const signAccessToken = (userId: string, matricule: string, role: string) => {
   const payload = {
     matricule,
     userId,
@@ -16,12 +11,7 @@ const signAccessToken = (
   };
   const secret = process.env.JWT_USER_TOKEN!;
   const token = jwt.sign(payload, secret, options);
-  res.cookies.set("UserToken", token, {
-    httpOnly: process.env.NODE_ENV === "production" ? false : true,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    secure: process.env.NODE_ENV === "production" ? true : false,
-    maxAge: 1000 * 60 * 60 * 24 * 8,
-  });
+  return token;
 };
 
 const signAdminToken = (

@@ -30,10 +30,13 @@ export async function POST(req: NextRequest) {
       where: { matricule: value.matricule },
     });
     if (error)
-      return res.json(
-        { message: error.message },
-        { status: errorCodes.badRequest }
-      );
+      return new res(JSON.stringify({ message: error.message }), {
+        status: errorCodes.badRequest,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
 
     if (!user)
       return new res(JSON.stringify({ error: "Wrong email or password" }), {
@@ -43,7 +46,10 @@ export async function POST(req: NextRequest) {
           "Access-Control-Allow-Origin": "*",
         },
       });
-    const decryptedPassword = bcrypt.compare(body.password, user?.password);
+    const decryptedPassword = await bcrypt.compare(
+      value.password,
+      user.password
+    );
     if (!decryptedPassword)
       return new res(JSON.stringify({ error: "Wrong email or password" }), {
         status: errorCodes.badRequest,
@@ -52,11 +58,15 @@ export async function POST(req: NextRequest) {
           "Access-Control-Allow-Origin": "*",
         },
       });
-    const response = new res(JSON.stringify({ message: "Log in sucessfull" }), {
+  
+    const token = signAccessToken(user.id, user.email, user.role);
+    return new res(JSON.stringify({ message: "Log in sucessfull" ,token}), {
       status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
     });
-    const token = signAccessToken(user.id, user.email, user.role, response);
-    return response;
   } catch (error: any) {
     return new res(JSON.stringify({ message: error.message }), {
       status: errorCodes.badRequest,
