@@ -58,15 +58,19 @@ export async function POST(req: NextRequest) {
           "Access-Control-Allow-Origin": "*",
         },
       });
-  
+
     const token = signAccessToken(user.id, user.email, user.role);
-    return new res(JSON.stringify({ message: "Log in sucessfull" ,token}), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
+    const usersData = { ...user, token };
+    return new res(
+      JSON.stringify({ message: "Log in sucessfull", usersData }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
+    );
   } catch (error: any) {
     return new res(JSON.stringify({ message: error.message }), {
       status: errorCodes.badRequest,
