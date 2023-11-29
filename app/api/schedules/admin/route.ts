@@ -22,9 +22,15 @@ export async function GET(req: NextRequest) {
     const todaysSchedule = await prisma.schedules.findMany({
       where: { date: currentDate },
       include: {
-        patient: true,
+        patient: {
+          include: {
+            userInfo: true,
+          },
+        },
       },
     });
+
+    console.log(todaysSchedule);
 
     return res.json(todaysSchedule, { status: 200 });
   } catch (error: any) {

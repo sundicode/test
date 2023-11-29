@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { BiEdit, BiPen, BiTrash } from "react-icons/bi";
 
 type TUser = {
-  _id: string;
+  id: string;
   username: string;
   matricule: string;
   email: string;
@@ -16,7 +16,7 @@ type TUser = {
 
 export type TPatient = {
   id: string;
-  user: TUser;
+  userInfo: TUser;
   medicalReciet: string;
   schoolfeeReciet: string;
 };
@@ -109,20 +109,20 @@ const AllSchedules = () => {
                         {schedules?.patient.map((patients: TPatient, index) => (
                           <tr
                             className="border border-solid border-l-0 border-r-0 hover:bg-primary hover:text-white duration-200 cursor-pointer"
-                            onClick={() => handleClick(patients.user.matricule)}
+                            onClick={() => handleClick(patients.userInfo.matricule)}
                             key={patients.id}
                           >
                             <td className="text-sm  px-6 py-3">
                               {index + 1 < 10 ? `0${index + 1}` : index + 1}
                             </td>
                             <td className="text-sm  px-6 py-3">
-                              {patients.user.username}
+                              {patients.userInfo.username}
                             </td>
                             <td className="text-sm  px-6 py-3">
-                              {patients.user.department}
+                              {patients.userInfo.department}
                             </td>
                             <td className="text-sm  px-6 py-3">
-                              {patients.user.matricule}
+                              {patients.userInfo.matricule}
                             </td>
                             <td className="text-sm  px-6 py-3">
                               {schedules.date}/{schedules.time}

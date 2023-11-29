@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
         },
       });
 
-    const token = signAccessToken(user.id, user.email, user.role);
+    const token = signAccessToken(user.id, user.matricule, user.role);
     const usersData = { ...user, token };
     return new res(
       JSON.stringify({ message: "Log in sucessfull", usersData }),

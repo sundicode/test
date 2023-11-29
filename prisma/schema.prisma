@@ -32,14 +32,7 @@ model schedules {
 
 
 
-model userinfos {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
-  medicalReciet   String
-  schoolfeeReciet String
-  user            String @db.ObjectId
-  schedule schedules @relation(fields: [scheduleId],references: [id])
-  scheduleId  String @db.ObjectId
-}
+
 
 model users {
   id         String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -50,8 +43,18 @@ model users {
   password   String
   role       Role @default(USER)
   username   String
+  userInfo userinfos?
 }
 
+model userinfos {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  medicalReciet   String
+  schoolfeeReciet String
+  userInfo users @relation(fields: [userId],references: [id])
+  userId String @db.ObjectId @unique
+  schedule schedules @relation(fields: [scheduleId],references: [id])
+  scheduleId  String @db.ObjectId
+}
 
 enum Role {
   USER

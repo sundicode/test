@@ -89,6 +89,7 @@ const sidebarLinks = [
     sublinks: [
       { name: "Settings", href: "/dashboard/options/settings" },
       { name: "Profile", href: "/dashboard/options/profile" },
+      { name: "Add Admin", href: "/add-admin" },
       { name: "Logout", href: "/dashboard/options/logout" },
     ],
     gap: 8,

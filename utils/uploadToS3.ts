@@ -15,7 +15,7 @@ export const uploadToS3Bucket = async (files: Buffer[], filename: string[]) => {
   const params = fileToUpload.map((file, index) => {
     return {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `uploads/${Date.now()}-${filename[index]}`,
+      Key: `uploads/${filename[index]}`,
       Body: file,
     };
   });
