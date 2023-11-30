@@ -7,8 +7,8 @@ import ErrorComponent from "@/components/ErrorComponent";
 import LoadingState from "@/components/LoadingState";
 const Single = ({ params }: { params: { matricule: string } }) => {
   const userRecord = async (matricule: string) => {
-    const userRecodInfo = await MedicksApi.get(`/schedule/${matricule}`);
-    return userRecodInfo.data?.user as TPatient;
+    const userRecodInfo = await MedicksApi.get(`/schedules/users/${matricule}`);
+    return userRecodInfo.data;
   };
 
   const { data, isLoading, error } = useQuery({

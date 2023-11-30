@@ -17,22 +17,18 @@ export async function GET(req: NextRequest) {
     const token = req.headers.get("authorization");
     const jwtToken = token?.split(" ")[1];
     const { data, status, err } = checkUserAuth(jwtToken!);
-    console.log(data);
     if (status) {
-      const date = new Date().toISOString().split("-");
-      const year = date[0];
-      const month = date[1];
-      const day = date[2].split("T")[0];
-      const currentDate = `${year}-${month}-${day}`;
-      const todaysSchedule = await prisma.schedules.findMany({
-        where: {
-          date: {
-            gte: currentDate,
-          },
-        },
-      });
-      if (!todaysSchedule) return res.json({ schedule: null }, { status: 200 });
-      return new res(JSON.stringify({ todaysSchedule }), {
+      // const userSchedule = await prisma.schedules.findUnique({
+      //   include: {
+      //     patient: {
+      //       where: {
+      //         userId: data?.userId,
+      //       },
+      //     },
+      //   },
+      //   where: undefined
+      // });
+      return new res(JSON.stringify({}), {
         status: 200,
         headers: {
           "Content-Type": "application/json",

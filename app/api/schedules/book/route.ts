@@ -24,7 +24,6 @@ export async function POST(req: NextRequest) {
     const { data, status, err } = checkUserAuth(jwtToken);
     if (status) {
       const formdata = await req.formData();
-      console.log(formdata);
 
       const medicalReceipt: File | null = formdata.get(
         "medical"
@@ -63,10 +62,6 @@ export async function POST(req: NextRequest) {
       );
 
       if (results[0].$metadata || results[0].$metadata) {
-        // await prisma.userinfos.create({
-        //   data: {
-        //   },
-        // });
         const schedule = await prisma.schedules.findUnique({
           where: {
             id: sceduleId,
@@ -75,12 +70,15 @@ export async function POST(req: NextRequest) {
         const userinfos = await prisma.userinfos.create({
           data: {
             scheduleId: sceduleId,
-            medicalReciet: "",
-            schoolfeeReciet: "",
+            medicalReciet: `${process.env.PUBLIC_AWS_LINK!}${
+              medicalReceipt.name
+            }`,
+            schoolfeeReciet: `${process.env.PUBLIC_AWS_LINK!}${
+              schoolfeeReceipt.name
+            }`,
             userId: data?.userId as string,
           },
         });
-        console.log(userinfos);
       }
 
       return new res(JSON.stringify({ results }), {
