@@ -105,6 +105,11 @@ const sidebarLinks = [
     gap: 8,
     sub: true,
   },
+
+  {
+    name: "History",
+    link: "/dashboard/history",
+  },
 ];
 
 const Sidebar = () => {
@@ -126,10 +131,18 @@ const Sidebar = () => {
                 className="w-full pr-5 py-3 text-md pl-4 flex justify-between items-center hover:bg-primary hover:text-white cursor-pointer"
                 onClick={() => handleSubmenuToggle(index)}
               >
-                <span>{option.name}</span>
-                <BiChevronRight
-                  className={activeIndex === index ? "active rotate-90" : ""}
-                />
+                {option.link ? (
+                  <Link href={option.link}>{option.name}</Link>
+                ) : (
+                  <>
+                    <span>{option.name}</span>
+                    <BiChevronRight
+                      className={
+                        activeIndex === index ? "active rotate-90" : ""
+                      }
+                    />
+                  </>
+                )}
               </li>
               {option.sublinks && activeIndex === index && (
                 <ul role="list" className="">

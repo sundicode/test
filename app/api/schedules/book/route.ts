@@ -33,6 +33,12 @@ export async function POST(req: NextRequest) {
       ) as unknown as File;
 
       const sceduleId = formdata.get("id") as string;
+
+      const exitingDoc = await prisma.schedules.findUnique({
+        where: {
+          id: sceduleId,
+        },
+      });
       if (!sceduleId || sceduleId === null)
         return res.json(
           { message: "Please choose a schedule" },

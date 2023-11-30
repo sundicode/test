@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import MedicksApi from "@/utils/axios";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 type TSignupForm = {
   email: string;
   password: string;
@@ -21,6 +22,7 @@ const Signup = () => {
     formState: { errors, isSubmitSuccessful },
   } = useForm<TSignupForm>();
   const [Loading, setLoading] = useState<boolean>(false);
+  const router = useRouter()
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset();
@@ -29,12 +31,13 @@ const Signup = () => {
   const handleSignup: SubmitHandler<TSignupForm> = (form: TSignupForm) => {
     MedicksApi.post("/admin/signup", form)
       .then((res) => {
+        router.push('/dashboard/schedules/all-schedule')
         setLoading(true);
         toast.success("Successfully created user");
       })
       .catch((error) => {
         console.log(error);
-        toast.error(error?.response?.data?.message);
+        toast.error(error?.response?.data?.error);
       })
       .finally(() => {
         setLoading(false);

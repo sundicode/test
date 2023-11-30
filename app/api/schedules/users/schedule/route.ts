@@ -18,16 +18,13 @@ export async function GET(req: NextRequest) {
     const jwtToken = token?.split(" ")[1];
     const { data, status, err } = checkUserAuth(jwtToken!);
     if (status) {
-      // const userSchedule = await prisma.schedules.findUnique({
-      //   include: {
-      //     patient: {
-      //       where: {
-      //         userId: data?.userId,
-      //       },
-      //     },
-      //   },
-      //   where: undefined
-      // });
+      const userSchedule = await prisma.schedules.findMany({
+        where: {
+          patient: {
+          
+          },
+        },
+      });
       return new res(JSON.stringify({}), {
         status: 200,
         headers: {

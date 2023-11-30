@@ -1,3 +1,4 @@
+import { checkAdminAuth } from "@/libs/checkAuthJwt";
 import { errorCodes } from "@/utils/errorCode";
 import { NextRequest, NextResponse as res } from "next/server";
 
@@ -11,8 +12,15 @@ export async function OPTIONS() {
   return res.json({}, { headers: corsHeaders });
 }
 export async function GET(req: NextRequest) {
-  const origin = req.headers.get("origin");
   try {
+    const adminToken = req.cookies.get("AdminToken")?.value;
+  //  const {status,err,data} = checkAdminAuth(adminToken!)
+
+    //  if () {
+
+    //  }else{
+
+    //  }
     return res.json({});
   } catch (error: any) {
     return res.json(
