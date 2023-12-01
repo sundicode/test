@@ -31,7 +31,7 @@ const checkUserAuth = (token: string) => {
   if (token) {
     jwt.verify(
       token,
-      process.env.JWT_ADMIN_TOKEN as string,
+      process.env.JWT_USER_TOKEN as string,
       (err: any, decodedToken: any) => {
         if (err) {
           result.data = null;

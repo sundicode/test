@@ -16,8 +16,12 @@ export async function GET(req: NextRequest) {
   try {
     const token = req.headers.get("authorization");
     const jwtToken = token?.split(" ")[1];
+    console.log("token", jwtToken);
+
     const { data, status, err } = checkUserAuth(jwtToken!);
-    // console.log(data);
+    console.log(status);
+    console.log(data);
+
     if (status) {
       const date = new Date().toISOString().split("-");
       const year = date[0];
@@ -40,6 +44,8 @@ export async function GET(req: NextRequest) {
         },
       });
     } else {
+      console.log(err);
+
       return new res(JSON.stringify({ err: err }), {
         status: errorCodes.unAuthorized,
         headers: {
