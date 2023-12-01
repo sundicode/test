@@ -17,30 +17,37 @@ export async function GET(req: NextRequest) {
     const token = req.headers.get("authorization");
     const jwtToken = token?.split(" ")[1];
     const { data, status, err } = checkUserAuth(jwtToken!);
-    if (status) {
-      const userSchedule = await prisma.schedules.findMany({
-        where: {
-          patient: {
-          
+    // if (status) {
+    const userSchedule = await prisma.schedules.findMany({
+      include: {
+        patient: {
+          include: {
+            userInfo: true,
           },
         },
-      });
-      return new res(JSON.stringify({}), {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
-    } else {
-      return new res(JSON.stringify({ err: err }), {
-        status: errorCodes.unAuthorized,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
-    }
+      },
+    });
+    const user = userSchedule.filter((schedules) =>
+      schedules.patient.some(
+        (userinfo) => userinfo.userInfo.matricule === "CT22A058"
+      )
+    );
+    return new res(JSON.stringify({ user }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+    // } else {
+    // return new res(JSON.stringify({ err: err }), {
+    //   status: errorCodes.unAuthorized,
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "Access-Control-Allow-Origin": "*",
+    //   },
+    // });
+    // }
   } catch (error: any) {
     return new res(JSON.stringify({ message: error.message }), {
       status: errorCodes.badRequest,

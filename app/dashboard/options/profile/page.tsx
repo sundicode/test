@@ -11,11 +11,11 @@ const Profile = () => {
     const adminProfileInfo = await MedicksApi.get(`/admin/profile`);
     return adminProfileInfo.data?.admin;
   };
-
   const { data, isLoading, error } = useQuery({
     queryKey: ["profile"],
     queryFn: adminProfile,
   });
+
   console.log(data);
 
   if (isLoading) return <LoadingState />;
@@ -37,33 +37,24 @@ const Profile = () => {
             <span>Email:</span>
             <span>{data?.email}</span>
           </div>
-          {/* <div className="border-b w-[200px] p-4 flex gap-x-3">
-            <span>Name:</span>
-            <span>Mary Jones</span>
-          </div> */}
           <div className="border-b w-[200px] p-4 flex gap-x-3">
             <span>Phone:</span>
             <span>{data?.phone}</span>
           </div>
-
           <div className="border-b w-[200px] p-4 flex gap-x-3">
             <span>Post:</span>
             <span>{data?.post}</span>
           </div>
-
           <div className="border-b w-[200px] p-4 flex gap-x-3">
             <span>Address:</span>
             <span>{data?.address}</span>
           </div>
-          {/* <div className="border-b w-[200px] p-4 flex gap-x-3">
-            <span>Post</span>
-            <span>Head</span>
-          </div> */}
         </div>
-
-        <div className="bg-light w-[40%] rounded-sm">
+        {data.image ? (
           <Image src={data?.image} alt="image" width={400} height={100} />
-        </div>
+        ) : (
+          <div className="bg-light w-[40%] rounded-sm"></div>
+        )}
       </div>
     </div>
   );

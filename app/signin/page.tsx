@@ -6,10 +6,10 @@ import cn from "@/utils/cn";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { ScaleLoader } from "react-spinners";
 import { toast } from "react-toastify";
-type pageProps = {};
 type TLoginForm = {
   email: string;
   password: string;
@@ -21,7 +21,7 @@ const Signin = () => {
     reset,
     formState: { errors, isSubmitSuccessful },
   } = useForm<TLoginForm>();
-
+  const [Loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset();
@@ -29,14 +29,19 @@ const Signin = () => {
   }, [isSubmitSuccessful, reset]);
   const router = useRouter();
   const hadleSignin = (data: TLoginForm) => {
+    setLoading(true);
     MedicksApi.post("/admin/signin", data)
       .then((res) => {
         router.push("/dashboard/schedules/all-schedule");
-        toast.success("Successfully created user");
+        toast.success("Successfully signed in");
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
         toast.error(error?.response?.data?.error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
   return (
@@ -100,12 +105,16 @@ const Signin = () => {
                 <input type="checkbox" />
                 <span>Remeber me</span>
               </div>
-              <Button
-                type="submit"
-                className="text-white bg-accent text-md font-bold py-3"
-              >
-                Login
-              </Button>
+              {Loading ? (
+               <ScaleLoader color="#2B33FF" className="mx-auto" />
+              ) : (
+                <Button
+                  type="submit"
+                  className="text-white bg-accent text-md font-bold py-3"
+                >
+                  Login
+                </Button>
+              )}
             </form>
           </div>
         </div>

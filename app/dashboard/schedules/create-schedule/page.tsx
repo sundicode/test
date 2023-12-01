@@ -5,6 +5,7 @@ import cn from "@/utils/cn";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { ScaleLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import { twMerge } from "tailwind-merge";
 export type TSchedule = {
@@ -18,7 +19,7 @@ const CreateSchedule = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitSuccessful, isSubmitted },
+    formState: { errors, isSubmitSuccessful },
   } = useForm<TSchedule>();
 
   useEffect(() => {
@@ -28,14 +29,13 @@ const CreateSchedule = () => {
   }, [isSubmitSuccessful, reset]);
   const router = useRouter();
   const handleCreateSchedule: SubmitHandler<TSchedule> = (data: TSchedule) => {
+    setLoading(true);
     MedicksApi.post("/schedules/create", data)
       .then((res) => {
-        setLoading(true);
         router.push("/dashboard/schedules/all-schedule");
         toast.success("Successfully created schedule");
       })
       .catch((error) => {
-        console.log(error);
         toast.error(error?.response?.data?.message);
       })
       .finally(() => {
@@ -100,17 +100,20 @@ const CreateSchedule = () => {
                 </p>
               ) : null}
             </div>
-
-            <Button
-              type="submit"
-              className={twMerge(
-                "w-full py-3 px-4 bg-primary text-white font-semibold",
-                Loading && "hidden"
-              )}
-              disabled={Loading}
-            >
-              Create
-            </Button>
+            {Loading ? (
+              <ScaleLoader color="#2B33FF" className="mx-auto" />
+            ) : (
+              <Button
+                type="submit"
+                className={twMerge(
+                  "w-full py-3 px-4 bg-primary text-white font-semibold",
+                  Loading && "hidden"
+                )}
+                disabled={Loading}
+              >
+                Create
+              </Button>
+            )}
           </form>
         </div>
       </div>

@@ -4,7 +4,7 @@ import LoadingState from "@/components/LoadingState";
 import MedicksApi from "@/utils/axios";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { BiEdit, BiPen, BiTrash } from "react-icons/bi";
+import { BiEdit, BiTrash } from "react-icons/bi";
 
 type TUser = {
   id: string;
@@ -37,8 +37,6 @@ const ScheduleHistory = () => {
     queryKey: ["history"],
     queryFn: getHistotychedules,
   });
-  console.log(data);
-
   const router = useRouter();
   const handleClick = (matricule: string) => {
     router.push(`/dashboard/schedules/all-schedule/${matricule}`);
@@ -51,13 +49,13 @@ const ScheduleHistory = () => {
       <div className="w-full h-[1px] bg-light"></div>
 
       <div className="w-[80%] mx-auto mt-10">
-        {data.length === 0 ? (
-          <div>No schedule Today</div>
+        {data?.length === 0 ? (
+          <div className=" text-[3rem] text-center">No schedule Today</div>
         ) : (
           <div>
-            {data.map((schedules: TSchedule) => (
+            {data?.map((schedules: TSchedule) => (
               <div key={schedules.id} className="mb-8">
-                {schedules.patient.length === 0 ? (
+                {schedules?.patient?.length === 0 ? (
                   <div className=" flex justify-center gap-2 text-primary font-semibold text-sm">
                     No Booking made for{" "}
                     <p> {new Date(schedules.date).toDateString()}</p>

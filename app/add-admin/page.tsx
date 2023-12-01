@@ -8,6 +8,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import MedicksApi from "@/utils/axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { ScaleLoader } from "react-spinners";
 type TSignupForm = {
   email: string;
   password: string;
@@ -22,21 +23,20 @@ const Signup = () => {
     formState: { errors, isSubmitSuccessful },
   } = useForm<TSignupForm>();
   const [Loading, setLoading] = useState<boolean>(false);
-  const router = useRouter()
+  const router = useRouter();
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset();
     }
   }, [isSubmitSuccessful, reset]);
   const handleSignup: SubmitHandler<TSignupForm> = (form: TSignupForm) => {
+    setLoading(true);
     MedicksApi.post("/admin/signup", form)
       .then((res) => {
-        router.push('/dashboard/schedules/all-schedule')
-        setLoading(true);
+        router.push("/dashboard/schedules/all-schedule");
         toast.success("Successfully created user");
       })
       .catch((error) => {
-        console.log(error);
         toast.error(error?.response?.data?.error);
       })
       .finally(() => {
@@ -122,13 +122,17 @@ const Signup = () => {
                   </p>
                 ) : null}
               </div>
-              <Button
-                type="submit"
-                className="text-white bg-accent text-md font-bold py-3"
-                disabled={Loading}
-              >
-                Add Admin
-              </Button>
+              {Loading ? (
+                <ScaleLoader color="#fff" className="mx-auto" />
+              ) : (
+                <Button
+                  type="submit"
+                  className="text-white bg-accent text-md font-bold py-3"
+                  disabled={Loading}
+                >
+                  Add Admin
+                </Button>
+              )}
             </form>
             <div className="w-[50%]">
               <Image

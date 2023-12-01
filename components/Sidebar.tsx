@@ -1,4 +1,4 @@
-// "use client";
+
 // import Link from "next/link";
 // import React, { useState } from "react";
 // import { BiChevronRight } from "react-icons/bi";
@@ -73,6 +73,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
+import { twMerge } from "tailwind-merge";
 
 const sidebarLinks = [
   {
@@ -128,7 +129,10 @@ const Sidebar = () => {
             <ul key={option.name}>
               <li
                 key={option.name}
-                className="w-full pr-5 py-3 text-md pl-4 flex justify-between items-center hover:bg-primary hover:text-white cursor-pointer"
+                className={twMerge(
+                  "w-full pr-5 py-3 text-[16px] pl-4 flex justify-between items-center hover:bg-primary hover:text-white cursor-pointer",
+                  router === option.name && "bg-primary"
+                )}
                 onClick={() => handleSubmenuToggle(index)}
               >
                 {option.link ? (
@@ -137,9 +141,9 @@ const Sidebar = () => {
                   <>
                     <span>{option.name}</span>
                     <BiChevronRight
-                      className={
+                      className={cn(
                         activeIndex === index ? "active rotate-90" : ""
-                      }
+                      )}
                     />
                   </>
                 )}
@@ -150,8 +154,8 @@ const Sidebar = () => {
                     <li
                       key={sublink.name}
                       className={cn(
-                        "text-[12px] p-2 hover:bg-slate-50 pl-7 duration-300",
-                        router === sublink.href ? "bg-white" : ""
+                        "text-[14px] p-2 hover:bg-primary hover:text-white pl-7 duration-300",
+                        router === sublink.href ? "bg-primary text-white" : ""
                       )}
                     >
                       <Link href={sublink.href}>{sublink.name}</Link>

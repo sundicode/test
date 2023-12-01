@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-type PayloadJwt = {
+type UserPayloadJwt = {
   status: boolean | null;
   data: {
     matricule: string;
@@ -10,8 +10,20 @@ type PayloadJwt = {
   } | null;
   err: string | null;
 };
+
+type AdminPayloadJwt = {
+  status: boolean | null;
+  data: {
+    email: string;
+    adminId: string;
+    role: string;
+    iat: number;
+    exp: number;
+  } | null;
+  err: string | null;
+};
 const checkUserAuth = (token: string) => {
-  const result: PayloadJwt = {
+  const result: UserPayloadJwt = {
     status: null,
     data: null,
     err: null,
@@ -19,10 +31,8 @@ const checkUserAuth = (token: string) => {
   if (token) {
     jwt.verify(
       token,
-      process.env.JWT_USER_TOKEN as string,
+      process.env.JWT_ADMIN_TOKEN as string,
       (err: any, decodedToken: any) => {
-        console.log(decodedToken);
-
         if (err) {
           result.data = null;
           result.status = false;
@@ -48,25 +58,40 @@ const checkUserAuth = (token: string) => {
   return result;
 };
 const checkAdminAuth = (token: string) => {
+  const result: AdminPayloadJwt = {
+    status: null,
+    data: null,
+    err: null,
+  };
   if (token) {
     jwt.verify(
       token,
       process.env.JWT_ADMIN_TOKEN as string,
       (err: any, decodedToken: any) => {
         if (err) {
-          return { status: false, err: err, data: null };
+          result.data = null;
+          result.status = false;
+          result.err = err;
         } else {
           if (decodedToken?.role !== "ADMIN") {
-            return { status: false, err: "Admin only action" };
+            result.data = null;
+            result.status = false;
+            result.err = "Admin only action";
           } else {
-            return { status: true, err: null, data: decodedToken };
+            result.data = decodedToken;
+            result.status = true;
+            result.err = null;
           }
         }
       }
     );
   } else {
-    return { status: false, err: "No auth token login to get one", data: null };
+    result.data = null;
+    result.status = false;
+    result.err = "No auth token login to get one";
   }
+
+  return result;
 };
 
 export { checkAdminAuth, checkUserAuth };

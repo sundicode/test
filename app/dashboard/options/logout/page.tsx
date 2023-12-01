@@ -3,21 +3,25 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import MedicksApi from "@/utils/axios";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
+import { ScaleLoader } from "react-spinners";
 
 const LogOut = () => {
+  const [Loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const logout = () => {
+    setLoading(true);
     MedicksApi.get("/admin/logout")
       .then((res) => {
         toast.success("Log out SuccessFull");
         router.push("/signin");
       })
       .catch((err) => {
-        console.log(err);
         toast.error(err?.response?.data?.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-    console.log("logout");
   };
   return (
     <div className="w-full flex justify-center items-center min-h-[80vh]">
@@ -25,12 +29,17 @@ const LogOut = () => {
         <Image src={"/logo.svg"} alt="logo" height={200} width={200} />
         <div>
           <p className="font-bold mb-2">Confirm By clicking the button</p>
-          <button
-            className="bg-orange-500 w-full font-bold text-lg py-4 rounded"
-            onClick={() => logout()}
-          >
-            Click to LogOut
-          </button>
+
+          {Loading ? (
+            <ScaleLoader color="#2B33FF" className="mx-auto" />
+          ) : (
+            <button
+              className="bg-orange-500 w-full font-bold text-lg py-4 rounded"
+              onClick={() => logout()}
+            >
+              Click to LogOut
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -51,11 +51,11 @@ const AllSchedules = () => {
       <div className="w-full h-[1px] bg-light"></div>
 
       <div className="w-[80%] mx-auto mt-10">
-        {data.length === 0 ? (
+        {data?.length === 0 ? (
           <div>No schedule Today</div>
         ) : (
           <div>
-            {data.map((schedules: TSchedule) => (
+            {data?.map((schedules: TSchedule) => (
               <div key={schedules.id} className="mb-8">
                 {schedules.patient.length === 0 ? (
                   <div className=" flex justify-center gap-2 text-primary font-semibold text-sm">
@@ -106,7 +106,7 @@ const AllSchedules = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {schedules?.patient.map((patients: TPatient, index) => (
+                        {schedules?.patient?.map((patients: TPatient, index) => (
                           <tr
                             className="border border-solid border-l-0 border-r-0 hover:bg-primary hover:text-white duration-200 cursor-pointer"
                             onClick={() => handleClick(patients.userInfo.matricule)}

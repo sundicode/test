@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     const { error, value } = loginSchema.validate(body);
     const user = await prisma.users.findUnique({
       where: { matricule: value.matricule },
-    });
+    });  
     if (error)
       return new res(JSON.stringify({ message: error.message }), {
         status: errorCodes.badRequest,
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
       });
 
     if (!user)
-      return new res(JSON.stringify({ error: "Wrong email or password" }), {
+      return new res(JSON.stringify({ error: "Wrong Matricule or password" }), {
         status: errorCodes.badRequest,
         headers: {
           "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
       user.password
     );
     if (!decryptedPassword)
-      return new res(JSON.stringify({ error: "Wrong email or password" }), {
+      return new res(JSON.stringify({ error: "Wrong Matricule or password" }), {
         status: errorCodes.badRequest,
         headers: {
           "Content-Type": "application/json",

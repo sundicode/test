@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BiChevronRight, BiUpload } from "react-icons/bi";
+import { ScaleLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import { twMerge } from "tailwind-merge";
 type TSettings = {
@@ -35,14 +36,13 @@ const Setting = () => {
 
   const router = useRouter();
   const handleUpdateAdmin: SubmitHandler<TSettings> = (data: TSettings) => {
+    setLoading(true);
     MedicksApi.patch("/admin/profile", data)
       .then((res) => {
-        setLoading(true);
         router.push("/dashboard/options/profile");
         toast.success("Successfully updated profile");
       })
       .catch((error) => {
-        console.log(error);
         toast.error(error?.response?.data?.message);
       })
       .finally(() => {
@@ -102,16 +102,21 @@ const Setting = () => {
                 {...register("address")}
               />
             </div>
-            <button
-              className={twMerge(
-                "w-full bg-primary py-3 rounded px-5 text-orange-400 font-bol",
-                Loading && "bg-slate-100"
-              )}
-              type="submit"
-              disabled={Loading}
-            >
-              Update Account
-            </button>
+
+            {Loading ? (
+              <ScaleLoader color="#2B33FF" className="mx-auto" />
+            ) : (
+              <button
+                className={twMerge(
+                  "w-full bg-primary py-3 rounded px-5 text-orange-400 font-bol",
+                  Loading && "bg-slate-100"
+                )}
+                type="submit"
+                disabled={Loading}
+              >
+                Update Account
+              </button>
+            )}
           </div>
         </div>
       </form>
