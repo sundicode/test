@@ -16,11 +16,7 @@ export async function GET(req: NextRequest) {
   try {
     const token = req.headers.get("authorization");
     const jwtToken = token?.split(" ")[1];
-    console.log("token", jwtToken);
-
-    const { data, status, err } = checkUserAuth(jwtToken!);
-    console.log(status);
-    console.log(data);
+    const { data, status, err } = checkUserAuth(jwtToken!)
 
     if (status) {
       const date = new Date().toISOString().split("-");

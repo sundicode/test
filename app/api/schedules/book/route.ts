@@ -38,12 +38,21 @@ export async function POST(req: NextRequest) {
         where: {
           id: sceduleId,
         },
+        include: {
+          patient: true,
+        },
       });
+      const user = exitingDoc?.patient.find(
+        (user) => user.userId === data?.userId
+      );
       if (!sceduleId || sceduleId === null)
-        return res.json(
-          { message: "Please choose a schedule" },
-          { status: 400 }
-        );
+        return new res(JSON.stringify({ error: "Please choose a schedule" }), {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        });
       if (!medicalReceipt || !schoolfeeReceipt) {
         return new res(JSON.stringify({ message: "all feilds are required" }), {
           status: errorCodes.badRequest,
@@ -67,7 +76,7 @@ export async function POST(req: NextRequest) {
         [medicalReceipt.name, schoolfeeReceipt.name]
       );
 
-      if (results[0].$metadata || results[0].$metadata) {
+      if (results.length > 0) {
         const schedule = await prisma.schedules.findUnique({
           where: {
             id: sceduleId,
@@ -76,24 +85,30 @@ export async function POST(req: NextRequest) {
         const userinfos = await prisma.userinfos.create({
           data: {
             scheduleId: sceduleId,
-            medicalReciet: `${process.env.PUBLIC_AWS_LINK!}${
-              medicalReceipt.name
-            }`,
-            schoolfeeReciet: `${process.env.PUBLIC_AWS_LINK!}${
-              schoolfeeReceipt.name
-            }`,
+            medicalReciet: results[0].url,
+            schoolfeeReciet: results[1].url,
             userId: data?.userId as string,
           },
         });
+        return new res(JSON.stringify({userinfos}), {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        });
+      } else {
+        return new res(
+          JSON.stringify({ error: "error occured sending your file" }),
+          {
+            status: 500,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          }
+        );
       }
-
-      return new res(JSON.stringify({ results }), {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
     } else {
       return new res(JSON.stringify({ err: err }), {
         status: errorCodes.unAuthorized,

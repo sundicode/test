@@ -1,4 +1,6 @@
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { randomBytes } from "crypto";
 
 const s3bucket = new S3Client({
   region: process.env.AWS_REGION as string,
@@ -10,17 +12,19 @@ const s3bucket = new S3Client({
 
 export const uploadToS3Bucket = async (files: Buffer[], filename: string[]) => {
   const fileToUpload = files;
-  console.log(filename);
-
-  const params = fileToUpload.map((file, index) => {
-    return {
+  const uniqueFileName = randomBytes(16).toString("hex");
+  const uploadTask = fileToUpload.map(async (file, index) => {
+    const command = new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `uploads/${filename[index]}`,
+      Key: `uploads/${uniqueFileName}-${filename[index]}`,
       Body: file,
-    };
-  });
+    });
 
-  return await Promise.all(
-    params.map((param) => s3bucket.send(new PutObjectCommand(param)))
-  );
+    await s3bucket.send(command);
+
+    const signedUrl = await getSignedUrl(s3bucket, command);
+    return { url: signedUrl.split("?")[0] as string };
+  });
+  const results = await Promise.all(uploadTask);
+  return results;
 };

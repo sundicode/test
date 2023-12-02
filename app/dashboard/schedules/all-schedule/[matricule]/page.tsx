@@ -1,7 +1,7 @@
 "use client";
 import MedicksApi from "@/utils/axios";
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 import { TPatient } from "../page";
 import ErrorComponent from "@/components/ErrorComponent";
 import LoadingState from "@/components/LoadingState";
@@ -15,10 +15,13 @@ const Single = ({ params }: { params: { matricule: string } }) => {
     queryKey: ["singleUser", params.matricule],
     queryFn: () => userRecord(params.matricule),
   });
-  console.log(data);
-
+  const [Pages, setPages] = useState(1);
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
+    setPages(numPages);
+  }
   if (error) return <ErrorComponent message={error.message} status={500} />;
   if (isLoading) return <LoadingState />;
+  console.log(data);
 
   return (
     <div className="p-1">
@@ -47,7 +50,7 @@ const Single = ({ params }: { params: { matricule: string } }) => {
 
           <div className="bg-light w-[40%] rounded-sm flex gap-10">
             <div className="bg-primary w-[50%]">
-              <p></p>
+            <iframe src={data.user.userInfo?.medicalReciet} className=""></iframe>
             </div>
             <div className="bg-red-200 w-[50%]">
               <p></p>
