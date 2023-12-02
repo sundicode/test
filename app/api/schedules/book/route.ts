@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
             userId: data?.userId as string,
           },
         });
-        return new res(JSON.stringify({userinfos}), {
+        return new res(JSON.stringify({ userinfos }), {
           status: 200,
           headers: {
             "Content-Type": "application/json",

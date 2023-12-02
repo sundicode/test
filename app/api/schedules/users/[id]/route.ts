@@ -12,20 +12,23 @@ const corsHeaders = {
 export async function OPTIONS() {
   return res.json({}, { headers: corsHeaders });
 }
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: { id: string };
+  }
+) {
   try {
+    const id = params.id;
     const token = req.headers.get("authorization");
     const jwtToken = token?.split(" ")[1];
     const { data, status, err } = checkUserAuth(jwtToken!);
     if (status) {
-      const userSchedule = await prisma.schedules.findMany({
-        include: {
-          patient: {
-            where: {
-              userId: data?.userId,
-            },
-          },
-        },
+      const userSchedule = await prisma.schedules.findUnique({
+        where: { id },
+        select: { time: true, date: true },
       });
 
       return new res(JSON.stringify({ userSchedule }), {
