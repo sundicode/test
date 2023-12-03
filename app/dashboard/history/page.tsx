@@ -98,8 +98,8 @@ const ScheduleHistory = () => {
                         <tr className="border border-solid border-l-0 border-r-0">
                           <th className="text-sm px-6 py-3 ">No</th>
                           <th className="text-sm  px-6 py-3">Students Name</th>
-                          <th className="text-sm  px-6 py-3">Matricule</th>
                           <th className="text-sm  px-6 py-3">Department</th>
+                          <th className="text-sm  px-6 py-3">Matricule</th>
                           <th className="text-sm  px-6 py-3">Date/time</th>
                         </tr>
                       </thead>

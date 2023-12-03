@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { TSchedule } from "../../create-schedule/page";
 import { useRouter } from "next/navigation";
@@ -18,40 +18,32 @@ export type Schedule = {
   numberOfPatients: string;
 };
 const UpdateScedule = ({ params }: { params: { scheduleId: string } }) => {
+  const router = useRouter();
+  const [ScheduleData, setUpdatedSchedule] = useState({
+    date: "",
+    time: "",
+    maxNumber: "",
+  });
   const userRecord = async (id: string) => {
     const userRecodInfo = await MedicksApi.get(`/schedules/${id}`);
+    setUpdatedSchedule({
+      time: userRecodInfo?.data?.time,
+      date: userRecodInfo?.data?.date,
+      maxNumber: userRecodInfo?.data?.numberOfPatients,
+    });
     return userRecodInfo.data as Schedule;
   };
   const { data, isLoading, error } = useQuery({
     queryKey: ["singleUser", params.scheduleId],
     queryFn: () => userRecord(params.scheduleId),
   });
-
   const [Loading, setLoading] = useState<boolean>(false);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitSuccessful },
-  } = useForm<TSchedule>({
-    defaultValues: {
-      date: data?.date,
-      time: data?.time,
-      maxNumber: data?.numberOfPatients,
-    },
-  });
 
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset();
-    }
-  }, [isSubmitSuccessful, reset]);
-  const router = useRouter();
-
-  const handleCreateSchedule: SubmitHandler<TSchedule> = (data: TSchedule) => {
-    MedicksApi.patch(`/schedules/${params.scheduleId}`, data)
+  const handleCreateSchedule = (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    MedicksApi.patch(`/schedules/${params.scheduleId}`, ScheduleData)
       .then((res) => {
-        setLoading(true);
         router.push("/dashboard/schedules/all-schedule");
         toast.success("Successfully updated schedule");
       })
@@ -73,7 +65,7 @@ const UpdateScedule = ({ params }: { params: { scheduleId: string } }) => {
           <div className="w-full flex items-center justify-center mt-5 min-h-[70vh]">
             <form
               className="w-[35%] flex flex-col gap-y-3 text-sm"
-              onSubmit={handleSubmit(handleCreateSchedule)}
+              onSubmit={handleCreateSchedule}
             >
               <div className="flex flex-col gap-y-2">
                 <label htmlFor="">Date</label>
@@ -83,14 +75,14 @@ const UpdateScedule = ({ params }: { params: { scheduleId: string } }) => {
                     "p-[.8rem] outline-none focus:outline-none rounded-[.2rem] border bg-gray-100"
                   )}
                   placeholder="date"
-                  {...register("date")}
-                  value={data?.date}
+                  value={ScheduleData.date}
+                  onChange={(e) =>
+                    setUpdatedSchedule({
+                      ...ScheduleData,
+                      date: e.target.value,
+                    })
+                  }
                 />
-                {errors?.date ? (
-                  <p className="text-[10px] text-red-600 text-semibold">
-                    {errors?.date?.message}
-                  </p>
-                ) : null}
               </div>
               <div className="flex flex-col gap-y-2">
                 <label htmlFor="">Time</label>
@@ -100,14 +92,14 @@ const UpdateScedule = ({ params }: { params: { scheduleId: string } }) => {
                   className={cn(
                     "p-[.8rem] outline-none focus:outline-none rounded-[.2rem] border bg-gray-100"
                   )}
-                  {...register("time")}
-                  value={data?.time}
+                  value={ScheduleData.time}
+                  onChange={(e) =>
+                    setUpdatedSchedule({
+                      ...ScheduleData,
+                      time: e.target.value,
+                    })
+                  }
                 />
-                {errors?.time ? (
-                  <p className="text-[10px] text-red-600 text-semibold">
-                    {errors?.time?.message}
-                  </p>
-                ) : null}
               </div>
               <div className="flex flex-col gap-y-2">
                 <label htmlFor="">Number Of Patients</label>
@@ -117,14 +109,14 @@ const UpdateScedule = ({ params }: { params: { scheduleId: string } }) => {
                   className={cn(
                     "p-[.8rem] outline-none focus:outline-none rounded-[.2rem] border bg-gray-100"
                   )}
-                  {...register("maxNumber")}
-                  value={data?.numberOfPatients}
+                  value={ScheduleData.maxNumber}
+                  onChange={(e) =>
+                    setUpdatedSchedule({
+                      ...ScheduleData,
+                      maxNumber: e.target.value,
+                    })
+                  }
                 />
-                {errors?.maxNumber ? (
-                  <p className="text-[10px] text-red-600 text-semibold">
-                    {errors?.maxNumber?.message}
-                  </p>
-                ) : null}
               </div>
 
               <Button

@@ -7,9 +7,9 @@ const Modal: FC<pageProps> = ({ children }) => {
   useEffect(() => {}, [Open]);
   useCallback(() => {}, []);
   return (
-    <div >
+    <div className=" bg-neutral-800 absolute insert-0 z-40">
       <div>
-        <BiX onClick={closeModal} />
+        <BiX onClick={closeModal} size={20} className="text-white" />
       </div>
       <div className="">
         <div>{children}</div>

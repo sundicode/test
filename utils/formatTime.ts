@@ -1,7 +1,8 @@
 export function onTimeChange(timeSplit: string) {
+  const time = timeSplit.split(":")
   var hours, minutes, meridian;
-  hours = Number(timeSplit[0]);
-  minutes = Number(timeSplit[1]);
+  hours = Number(time[0]);
+  minutes = Number(time[1]);
   if (hours > 12) {
     meridian = "PM";
     hours -= 12;
@@ -14,5 +15,5 @@ export function onTimeChange(timeSplit: string) {
     meridian = "PM";
   }
 
-  return `${hours}:${minutes}:${meridian}`;
+  return `${hours}:${minutes} ${meridian}`;
 }

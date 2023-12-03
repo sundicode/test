@@ -1,4 +1,3 @@
-
 // import Link from "next/link";
 // import React, { useState } from "react";
 // import { BiChevronRight } from "react-icons/bi";
@@ -121,7 +120,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="min-h-[85vh] w-full rounded bg-light">
+    <div className="min-h-[85vh] w-full rounded bg-light -left-96 md:">
       <nav>
         <div className="h-[100px]"></div>
         <ul>

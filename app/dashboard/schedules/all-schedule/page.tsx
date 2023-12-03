@@ -2,10 +2,10 @@
 import ErrorComponent from "@/components/ErrorComponent";
 import LoadingState from "@/components/LoadingState";
 import MedicksApi from "@/utils/axios";
+import { onTimeChange } from "@/utils/formatTime";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { BiEdit, BiPen, BiTrash } from "react-icons/bi";
-
+import { BiEdit,BiTrash } from "react-icons/bi";
 type TUser = {
   id: string;
   username: string;
@@ -92,7 +92,17 @@ const AllSchedules = () => {
                   <>
                     <div className=" w-full flex justify-end text-sm font-bold gap-4">
                       <p> {new Date(schedules.date).toDateString()}</p>
-                      <p>{schedules.time}</p>
+                      <p>{onTimeChange(schedules.time)}</p>
+                      <BiEdit
+                        size={20}
+                        className="text-green-500  cursor-pointer hover:text-green-400"
+                        titles={"Update Schedule"}
+                        onClick={() =>
+                          router.push(
+                            `/dashboard/schedules/update/${schedules.id}`
+                          )
+                        }
+                      />
                     </div>
 
                     <table className="text-[11px] w-full text-center bg-light text-slate-800">
@@ -100,38 +110,42 @@ const AllSchedules = () => {
                         <tr className="border border-solid border-l-0 border-r-0">
                           <th className="text-sm px-6 py-3 ">No</th>
                           <th className="text-sm  px-6 py-3">Students Name</th>
-                          <th className="text-sm  px-6 py-3">Matricule</th>
                           <th className="text-sm  px-6 py-3">Department</th>
+                          <th className="text-sm  px-6 py-3">Matricule</th>
                           <th className="text-sm  px-6 py-3">Date/time</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {schedules?.patient?.map((patients: TPatient, index) => (
-                          <tr
-                            className="border border-solid border-l-0 border-r-0 hover:bg-primary hover:text-white duration-200 cursor-pointer"
-                            onClick={() => handleClick(patients.userInfo.matricule)}
-                            key={patients.id}
-                          >
-                            <td className="text-sm  px-6 py-3">
-                              {index + 1 < 10 ? `0${index + 1}` : index + 1}
-                            </td>
-                            <td className="text-sm  px-6 py-3">
-                              {patients.userInfo.username}
-                            </td>
-                            <td className="text-sm  px-6 py-3">
-                              {patients.userInfo.department}
-                            </td>
-                            <td className="text-sm  px-6 py-3">
-                              {patients.userInfo.matricule}
-                            </td>
-                            <td className="text-sm  px-6 py-3">
-                              {schedules.date}/{schedules.time}
-                              {Number(schedules.time.split(":")[0]) > 12
-                                ? "pm"
-                                : "am"}
-                            </td>
-                          </tr>
-                        ))}
+                        {schedules?.patient?.map(
+                          (patients: TPatient, index) => (
+                            <tr
+                              className="border border-solid border-l-0 border-r-0 hover:bg-primary hover:text-white duration-200 cursor-pointer"
+                              onClick={() =>
+                                handleClick(patients.userInfo.matricule)
+                              }
+                              key={patients.id}
+                            >
+                              <td className="text-sm  px-6 py-3">
+                                {index + 1 < 10 ? `0${index + 1}` : index + 1}
+                              </td>
+                              <td className="text-sm  px-6 py-3">
+                                {patients.userInfo.username}
+                              </td>
+                              <td className="text-sm  px-6 py-3">
+                                {patients.userInfo.department}
+                              </td>
+                              <td className="text-sm  px-6 py-3">
+                                {patients.userInfo.matricule}
+                              </td>
+                              <td className="text-sm  px-6 py-3">
+                                {schedules.date}/{schedules.time}
+                                {Number(schedules.time.split(":")[0]) > 12
+                                  ? "pm"
+                                  : "am"}
+                              </td>
+                            </tr>
+                          )
+                        )}
                       </tbody>
                     </table>
                   </>
