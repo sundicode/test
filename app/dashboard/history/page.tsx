@@ -45,7 +45,7 @@ const ScheduleHistory = () => {
   if (error) return <ErrorComponent message={error.message} status={500} />;
   return (
     <div className="w-full">
-      <h1 className=" text-3xl font-semibold">Today&apos;s Schedules</h1>
+      <h1 className=" text-3xl font-semibold">Schedules History</h1>
       <div className="w-full h-[1px] bg-light"></div>
 
       <div className="w-[80%] mx-auto mt-10">

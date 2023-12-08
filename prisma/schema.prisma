@@ -56,6 +56,18 @@ model userinfos {
   scheduleId  String @db.ObjectId
 }
 
+
+model HealthTip{
+    id         String @id @default(auto()) @map("_id") @db.ObjectId
+    slug String @unique
+    title String? 
+    description String
+    image String?
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime   @updatedAt
+    author String @default("Doctor")
+}
+
 enum Role {
   USER
   ADMIN

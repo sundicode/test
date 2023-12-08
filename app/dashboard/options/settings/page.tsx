@@ -36,6 +36,7 @@ const Setting = () => {
 
   const router = useRouter();
   const handleUpdateAdmin: SubmitHandler<TSettings> = (data: TSettings) => {
+    
     setLoading(true);
     MedicksApi.patch("/admin/profile", data)
       .then((res) => {
