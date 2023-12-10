@@ -6,7 +6,7 @@ type ContainerProps = {
 };
 const Container: FC<ContainerProps> = ({ children }) => {
   return (
-    <div className="min-h-screen w-screen relative">
+    <div className="min-h-screen w-screen relative overflow-hidden">
       <ToastContainer />
       {children}
     </div>
