@@ -6,6 +6,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "medicals-schoolfees.s3.eu-north-1.amazonaws.com",
       },
+
+      {
+        protocol: "https",
+        hostname: "mediksmain.s3.us-east-1.amazonaws.com",
+      },
     ],
   },
   // future: { webpack5: true },

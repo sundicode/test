@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse as res } from "next/server";
 import prisma from "@/prisma/prisma";
 import { errorCodes } from "@/utils/errorCode";
-import { checkAdminAuth, checkUserAuth } from "@/libs/checkAuthJwt";
+import { checkAdminAuth} from "@/libs/checkAuthJwt";
 import { uploadToS3Bucket } from "@/utils/uploadToS3";
 
 const corsHeaders = {
@@ -15,7 +15,7 @@ export async function OPTIONS() {
 }
 export async function GET(req: NextRequest) {
   try {
-    const tips = await prisma.healthTip.findMany();
+    const tips = await prisma.healthTip.findMany({});
     return new res(JSON.stringify({ tips }), {
       status: 200,
       headers: {
@@ -24,6 +24,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error: any) {
+    console.log(error);
     return new res(JSON.stringify({ message: error.message }), {
       status: errorCodes.badRequest,
       headers: {
@@ -38,7 +39,6 @@ export async function POST(req: NextRequest) {
   try {
     const adminToken = req.cookies.get("AdminToken")?.value;
     const tipData = await req.formData();
-    console.log(tipData);
     const description = tipData.get("description") as string;
     const slug = tipData.get("slug") as string;
     const files: File | null = tipData.get("file") as unknown as File;

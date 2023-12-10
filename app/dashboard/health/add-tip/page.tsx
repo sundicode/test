@@ -19,6 +19,7 @@ import { register } from "module";
 import { ScaleLoader } from "react-spinners";
 import MedicksApi from "@/utils/axios";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 type Ttip = {
   slug: string;
   title: string;
@@ -27,6 +28,7 @@ type Ttip = {
 };
 const CreateHealthTip = () => {
   const [Loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
   const form = useForm<Ttip>({
     mode: "onChange",
   });
@@ -50,6 +52,7 @@ const CreateHealthTip = () => {
     })
       .then((res) => {
         toast.success("successful created Tip");
+        router.push("/dashboard/health/all-tip")
       })
       .catch((err) => {
         setLoading(false);
